@@ -1,0 +1,37 @@
+iot:
+    mqtt:
+        auto-reconnect: true
+        clean-state: false
+        client-id: rachna
+        connection-retry: 5
+        connection-timeout: 120
+        host: iot.aloksingh.info
+        keep-alive: 120
+        port: 8883
+        publish-qos: 1
+        publish-topic: home/stack/stmt-req
+        status-topic: home/stack/status
+        subscribe-qos: 1
+        subscribe-topic: home/stack/stmt-res
+    secure:
+        keystore-file: keystore.jks
+        keystore-password: ${KS-PASSWORD}
+        keystore-type: JKS
+        truststore-file: truststore.jks
+        truststore-password: ${TS-PASSWORD}
+management:
+    endpoints:
+        web:
+            exposure:
+                include: '*'
+server:
+    servlet:
+        context-path: /proxy
+spring:
+    application:
+        name: rest-proxy
+    profiles:
+        active: dev,mqtt
+web:
+    cache-control:
+        max-age: 30
