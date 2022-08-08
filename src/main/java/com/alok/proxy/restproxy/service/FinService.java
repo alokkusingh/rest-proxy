@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 @Service
 public class FinService {
@@ -24,26 +25,24 @@ public class FinService {
     @Autowired
     private RequestCache requestCache;
 
-    public CompletableFuture<ResponsePayload> processGetRequest(
+    public ResponsePayload processGetRequest(
             Map<String, String> headers,
             Map<String, String> queries,
             String pathA, String pathB, String pathC, String pathD, String pathE
-    ) throws MqttException {
+    ) throws MqttException, ExecutionException, InterruptedException {
 
-        String correlationId = UUID.randomUUID().toString();
-        CompletableFuture<ResponsePayload> completableFuture = new CompletableFuture<>();
-        requestCache.getResponseCache().put(correlationId, completableFuture);
-         try {
-             mqttClientService.publish(new RequestPayload(
-                     HttpMethod.GET,
-                     prepareHttpUrl(queries, pathA, pathB, pathC, pathD, pathE),
-                     null,
-                     correlationId
-             ));
-         } catch (MqttException e) {
-             throw new RuntimeException(e);
-         }
-         return completableFuture;
+         String correlationId = UUID.randomUUID().toString();
+         CompletableFuture<ResponsePayload> completableFuture = new CompletableFuture<>();
+         requestCache.getResponseCache().put(correlationId, completableFuture);
+         mqttClientService.publish(new RequestPayload(
+                 HttpMethod.GET,
+                 prepareHttpUrl(queries, pathA, pathB, pathC, pathD, pathE),
+                 null,
+                 correlationId
+         ));
+
+         ResponsePayload responsePayload = completableFuture.get();
+         return responsePayload;
     }
 
     private String prepareHttpUrl(

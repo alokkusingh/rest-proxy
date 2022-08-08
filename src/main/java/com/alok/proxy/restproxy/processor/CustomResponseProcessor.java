@@ -26,8 +26,6 @@ public class CustomResponseProcessor extends ResponseProcessor {
 
     @Override
     public String processResponse(ResponsePayload responsePayload) {
-        log.info("Response received: {}", responsePayload);
-
         requestCache.getResponseCache().remove(responsePayload.getCorrelationId()).complete(responsePayload);
         return null;
     }

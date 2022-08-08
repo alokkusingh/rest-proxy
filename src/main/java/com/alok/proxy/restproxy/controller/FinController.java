@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Base64;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 @Slf4j
@@ -36,15 +35,12 @@ public class FinController {
             @PathVariable(required = false) String e
     ) throws MqttException, ExecutionException, InterruptedException {
 
-        log.info("Request received!!");
-        CompletableFuture<ResponsePayload> future = finService.processGetRequest(headers, queries, a, b, c, d, e);
+        log.debug("Request received!!");
+        ResponsePayload responsePayload = finService.processGetRequest(headers, queries, a, b, c, d, e);
 
-        log.info("Waiting for response!");
-        ResponsePayload responsePayload = future.get();
-        log.info("Response received!");
-
-        ResponseEntity<String> response = ResponseEntity.ok(new String(Base64.getDecoder().decode(responsePayload.getBody())));
-
-        return response;
+        log.debug("Waiting for response!");
+        return ResponseEntity
+                .status(responsePayload.getCode())
+                .body(new String(Base64.getDecoder().decode(responsePayload.getBody())));
     }
 }
