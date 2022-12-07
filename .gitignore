@@ -6,6 +6,7 @@ resources/data/
 !**/src/test/**
 !log/
 !logs/
+!logs/**
 
 ### STS ###
 .apt_generated
