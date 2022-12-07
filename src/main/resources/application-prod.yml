@@ -1,6 +1,6 @@
 iot:
     mqtt:
-        host: localhost
+        host: arktr4szflm0y-ats.iot.ap-south-1.amazonaws.com
         port: 8883
 server:
     port: 8080
